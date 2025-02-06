@@ -38,19 +38,20 @@ header {
   align-items: center;
 }
 
-.nav ul {
+nav ul {
   display: flex;
   gap: 2rem;
   list-style: none;
 }
 
-.nav li a {
+nav li a {
   color: var(--background-color);
   text-decoration: none;
   transition: opacity 0.2s;
+  margin-left: 2rem;
 }
 
-.nav li a:hover {
+nav li a:hover {
   opacity: 0.8;
 }
 

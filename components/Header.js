@@ -14,7 +14,7 @@ export default function Header() {
 
   const ul = createElement("ul", {}, [li]);
 
-  const nav = createElement("nav", { className: "nav" }, [ul]);
+  const nav = createElement("nav", {}, [ul]);
   const section = createElement("section", { className: "header-container" }, [
     logo,
     nav,
