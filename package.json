@@ -4,11 +4,12 @@
   "description": "WDD330 Final Project",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel index.html",
+    "start": "parcel serve index.html",
     "build": "parcel build index.html"
   },
   "author": "Ivan Leffalle",
   "dependencies": {
-    "parcel": "^2.13.3"
+    "parcel": "^2.13.3",
+    "prettier": "^3.4.2"
   }
 }

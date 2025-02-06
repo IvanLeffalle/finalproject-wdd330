@@ -1,4 +1,3 @@
-const hello = document.createElement("h1");
-hello.textContent = "Hello World!";
+import App from "./app";
 
-document.getElementById("root").appendChild(hello);
+document.getElementById("root").appendChild(App());
