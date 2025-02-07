@@ -1,6 +1,11 @@
 import { createElement } from "./utils";
 import Homepage from "../pages/HomePage";
+import Router from "../components/Router";
 
 export default function App() {
-  return createElement("div", {}, [Homepage()]);
+  const main = Homepage();
+
+  Router(main);
+
+  return createElement("div", {}, [main]);
 }

@@ -1,6 +1,6 @@
-import { createElement } from "./utils";
+import { createElement } from "../src/utils";
 
-function Counter() {
+export default function Counter() {
   function updateCount(element, count) {
     element.textContent = count;
   }
@@ -35,5 +35,3 @@ function Counter() {
     footer,
   ]);
 }
-
-export default Counter;

@@ -6,9 +6,9 @@ export default function Header() {
     textContent: "FamilyHub",
   });
 
-  const aHome = createElement("a", { href: "/", textContent: "Home" });
-  const aTools = createElement("a", { href: "/links", textContent: "Tools" });
-  const aAbout = createElement("a", { href: "/about", textContent: "About" });
+  const aHome = createElement("a", { href: "/#/", textContent: "Home" });
+  const aTools = createElement("a", { href: "/#/links", textContent: "Tools" });
+  const aAbout = createElement("a", { href: "/#/about", textContent: "About" });
 
   const li = createElement("li", {}, [aHome, aTools, aAbout]);
 
