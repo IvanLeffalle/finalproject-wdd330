@@ -62,7 +62,7 @@ nav li a:hover {
   letter-spacing: 1px;
 }
 
-main {
+.main-index {
   flex: 1;
   display: flex;
   align-items: center;
@@ -133,27 +133,138 @@ main {
   box-shadow: 0 0 0 3px rgba(87, 142, 126, 0.2);
 }
 
-.button {
-  background-color: var(--primary-color);
-  color: var(--background-color);
-  padding: 1rem 2.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    transform 0.2s,
-    background-color 0.2s;
-}
 
-.button:hover {
-  background-color: #3d6e5e;
-  transform: translateY(-2px);
-}
 footer {
   text-align: center;
   padding: 2rem;
   background-color: var(--primary-color);
   color: var(--background-color);
+}
+/*links section*/
+.links-Main {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.content-container {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.title {
+  font-size: 2rem;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.resource-card {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  transition: transform 0.2s;
+  box-shadow: var(--card-shadow);
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+}
+
+.resource-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.resource-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resource-links a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.resource-links a:hover {
+  opacity: 1;
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.first-steps {
+  margin-top: 2rem;
+}
+
+.first-steps ol {
+  padding-left: 2rem;
+  color: var(--secondary-color);
+}
+
+.first-steps li {
+  margin-bottom: 1rem;
+}
+
+.family-tree {
+  margin-top: 2rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background: var(--background-color);
+  color: var(--secondary-color);
+}
+
+#familyTreeOutput {
+  margin-top: 2rem;
+}
+
+#treeVisualization {
+  background: var(--background-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  color: var(--secondary-color);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+button:hover {
+  background-color: #3d6e5e;
+  transform: translateY(-2px);
 }

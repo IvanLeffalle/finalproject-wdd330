@@ -48,7 +48,9 @@ export default function Homepage() {
     [searchElement]
   );
 
-  const main = createElement("main", {}, [searchContainer]);
+  const main = createElement("main", { className: "main-index" }, [
+    searchContainer,
+  ]);
 
   const footer = createElement(
     "footer",

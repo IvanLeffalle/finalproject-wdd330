@@ -1,6 +1,6 @@
 import Homepage from "../pages/HomePage";
 import Links from "../pages/Links";
-import Counter from "./Counter";
+import AdvancedSearch from "../pages/Results";
 
 export default function Router(mainView) {
   function updateView(newView) {
@@ -8,19 +8,42 @@ export default function Router(mainView) {
     mainView.appendChild(newView);
   }
 
-  window.addEventListener("hashchange", (evt) => {
-    console.debug(evt);
-    const newUrl = new URL(evt.newURL);
-    const hash = newUrl.hash;
-    switch (hash) {
-      case "#/":
+  function handleRouteChange() {
+    const path = window.location.pathname;
+    switch (path) {
+      case "/":
         updateView(Homepage());
         break;
-      case "#/links":
+      case "/links":
         updateView(Links());
         break;
-      case "#/about":
+      case "/about":
+        updateView(Links());
         break;
+      case "/results":
+        updateView(AdvancedSearch());
+        break;
+      default:
+        updateView(Homepage());
     }
-  });
+  }
+  handleRouteChange();
+  window.addEventListener("popstate", handleRouteChange);
 }
+
+//  window.addEventListener("hashchange", (evt) => {
+//   console.debug(evt);
+//   const newUrl = new URL(evt.newURL);
+//  const hash = newUrl.hash;
+//   switch (hash) {
+//    case "#/":
+//     updateView(Homepage());
+//     break;
+//  case "#/links":
+//    updateView(Links());
+//    break;
+//   case "#/about":
+//      break;
+//    }
+// });
+//}
