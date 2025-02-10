@@ -61,5 +61,25 @@ export default function Homepage() {
     []
   );
 
+  function search() {
+    const surname = document.getElementById("surname").value.trim();
+    if (surname) {
+      window.location.href = `results?query=${encodeURIComponent(surname)}`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchButton = document.querySelector(".button");
+    const surnameInput = document.getElementById("surname");
+
+    searchButton.addEventListener("click", search);
+
+    surnameInput.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        search();
+      }
+    });
+  });
+
   return createElement("div", {}, [header, main, footer]);
 }

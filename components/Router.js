@@ -1,30 +1,37 @@
 import Homepage from "../pages/HomePage";
 import Links from "../pages/Links";
-import AdvancedSearch from "../pages/Results";
+import Results from "../pages/Results";
 
 export default function Router(mainView) {
-  function updateView(newView) {
+  let currentView = null;
+
+  function updateView(newView, params) {
     mainView.innerHTML = "";
-    mainView.appendChild(newView);
+    currentView = newView;
+    mainView.appendChild(newView(params));
   }
 
   function handleRouteChange() {
     const path = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get("query");
+    const filter = urlParams.get("filter") || "all";
+
     switch (path) {
       case "/":
-        updateView(Homepage());
+        updateView(Homepage);
         break;
       case "/links":
-        updateView(Links());
+        updateView(Links);
         break;
       case "/about":
-        updateView(Links());
+        updateView(Links);
         break;
       case "/results":
-        updateView(AdvancedSearch());
+        updateView(Results, { query, filter });
         break;
       default:
-        updateView(Homepage());
+        updateView(Homepage);
     }
   }
   handleRouteChange();
