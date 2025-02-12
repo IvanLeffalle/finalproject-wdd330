@@ -1,6 +1,6 @@
 import { createElement } from "../src/utils";
 import Header from "../components/Header";
-
+let currentSearchTerm = null;
 export default function Results(props) {
   const { query, filter } = props || {};
 
