@@ -256,87 +256,84 @@ export default function Results(props) {
     });
   }
 
-  const structure = createElement("div", {}, [
-    createElement("header", {}, [Header()]),
-    createElement("main", { className: "main-results" }, [
-      // Search container
-      createElement("div", { className: "search-container-results" }, [
-        createElement("div", { className: "search-element-results" }, [
-          createElement("h1", {
-            className: "title",
-            textContent: "Advanced Search",
+  const header = createElement("header", {}, [Header()]);
+  const main = createElement("main", { className: "main-results" }, [
+    // Search container
+    createElement("div", { className: "search-container-results" }, [
+      createElement("div", { className: "search-element-results" }, [
+        createElement("h1", {
+          className: "title",
+          textContent: "Advanced Search",
+        }),
+        createElement("div", { className: "input-wrapper-results" }, [
+          createElement("svg", {
+            className: "search-icon",
+            viewBox: "0 0 24 24",
+            fill: "none",
+            stroke: "currentColor",
+            strokeWidth: "2",
+            children: [
+              createElement("path", {
+                d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
+              }),
+            ],
           }),
-          createElement("div", { className: "input-wrapper-results" }, [
-            createElement("svg", {
-              className: "search-icon",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: "2",
-              children: [
-                createElement("path", {
-                  d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
-                }),
-              ],
-            }),
-            createElement("input", {
-              type: "text",
-              id: "surname",
-              className: "input-search",
-              placeholder: "Enter your search term...",
-              "aria-label": "Search input",
-            }),
-          ]),
-          createElement("button", {
-            id: "searchButton",
-            className: "searchButton",
-            textContent: "Search",
+          createElement("input", {
+            type: "text",
+            id: "surname",
+            className: "input-search",
+            placeholder: "Enter your search term...",
+            "aria-label": "Search input",
           }),
         ]),
+        createElement("button", {
+          id: "searchButton",
+          className: "searchButton",
+          textContent: "Search",
+        }),
       ]),
-      // Results container
-      createElement("div", { className: "results-container" }, [
-        // Filters
-        createElement("aside", { className: "filters" }, [
-          createElement("h3", { textContent: "Data Sources" }),
-          createElement(
-            "ul",
-            { className: "filter-list", id: "filterList" },
-            [
-              ["All Sources", "all"],
-              ["Google Books", "google"],
-              ["Wikipedia", "wikipedia"],
-              ["Anaforas", "anaforas"],
-            ].map(([text, filterValue]) =>
-              createElement("li", {}, [
-                createElement("a", {
-                  href: "#",
-                  className: filterValue === "all" ? "active" : "",
-                  "data-filter": filterValue,
-                  textContent: text,
-                }),
-              ])
-            )
-          ),
-        ]),
-        // Results section
-        createElement("section", { className: "results" }, [
-          createElement("div", { className: "results-header" }, [
-            createElement("h3", { textContent: "Search Results" }),
-            createElement("p", {}, [
-              createElement("span", { id: "resultsCount", textContent: "0" }),
-            ]),
+    ]),
+    // Results container
+    createElement("div", { className: "results-container" }, [
+      // Filters
+      createElement("aside", { className: "filters" }, [
+        createElement("h3", { textContent: "Data Sources" }),
+        createElement(
+          "ul",
+          { className: "filter-list", id: "filterList" },
+          [
+            ["All Sources", "all"],
+            ["Google Books", "google"],
+            ["Wikipedia", "wikipedia"],
+            ["Anaforas", "anaforas"],
+          ].map(([text, filterValue]) =>
+            createElement("li", {}, [
+              createElement("a", {
+                href: "#",
+                className: filterValue === "all" ? "active" : "",
+                "data-filter": filterValue,
+                textContent: text,
+              }),
+            ])
+          )
+        ),
+      ]),
+      // Results section
+      createElement("section", { className: "results" }, [
+        createElement("div", { className: "results-header" }, [
+          createElement("h3", { textContent: "Search Results" }),
+          createElement("p", {}, [
+            createElement("span", { id: "resultsCount", textContent: "0" }),
           ]),
-          createElement("div", {
-            className: "results-grid",
-            id: "resultsContainer",
-          }),
-          createElement("div", { id: "anaforasContainer" }),
         ]),
+        createElement("div", {
+          className: "results-grid",
+          id: "resultsContainer",
+        }),
+        createElement("div", { id: "anaforasContainer" }),
       ]),
     ]),
   ]);
-  setTimeout(init, 0);
 
-  return structure;
+  return createElement("div", {}, [header, main]);
 }
