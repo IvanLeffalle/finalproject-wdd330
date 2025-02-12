@@ -14,12 +14,3 @@ export function createElement(type, props = {}, children = []) {
   });
   return element;
 }
-
-export default function getSearchParams() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const params = {};
-  for (const [key, value] of urlParams) {
-    params[key] = value;
-  }
-  return params;
-}

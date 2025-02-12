@@ -289,7 +289,7 @@ export default function Results(props) {
           ]),
           createElement("button", {
             id: "searchButton",
-            className: "button",
+            className: "searchButton",
             textContent: "Search",
           }),
         ]),
