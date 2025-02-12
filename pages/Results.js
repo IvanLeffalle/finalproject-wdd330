@@ -267,12 +267,8 @@ export default function Results(props) {
             textContent: "Advanced Search",
           }),
           createElement("div", { className: "input-wrapper-results" }, [
-            createElement("svg", {
-              className: "search-icon",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              strokeWidth: "2",
+            createElement("i", {
+              className: "search-icon fas fa-search",
             }),
             createElement("input", {
               type: "text",

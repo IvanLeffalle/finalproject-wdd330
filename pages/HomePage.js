@@ -2,25 +2,14 @@ import Header from "../components/Header";
 import { createElement } from "../src/utils";
 export default function Homepage() {
   const header = createElement("header", {}, [Header()]);
-
+  const searchIcon = createElement("i", {
+    className: "search-icon fas fa-search",
+  });
   const title = createElement("h1", {
     textContent: "FamilyHub",
     className: "title",
   });
-  const path = createElement("path", {
-    d: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
-  });
-  const svg = createElement(
-    "svg",
-    {
-      className: "search-icon",
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      strokeWidth: "2",
-    },
-    [path]
-  );
+
   const input = createElement("input", {
     type: "text",
     id: "surname",
@@ -28,7 +17,7 @@ export default function Homepage() {
     Placeholder: "Enter your surname...",
   });
   const inputWrapper = createElement("div", { className: "input-wrapper" }, [
-    svg,
+    searchIcon,
     input,
   ]);
 
