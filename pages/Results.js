@@ -1,17 +1,23 @@
 import { createElement } from "../src/utils";
 import Header from "../components/Header";
-let currentSearchTerm = null;
+
 export default function Results(props) {
   const { query, filter } = props || {};
+  let currentSearchTerm = null;
+  let currentFilter = "all";
+  let currentPage = 1;
+  const RESULTS_PER_PAGE = 10;
 
   function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
   }
 
-  async function fetchDataGoogleBooks(url) {
+  async function fetchDataGoogleBooks(url, page) {
     try {
-      const response = await fetch(url);
+      const startIndex = (page - 1) * RESULTS_PER_PAGE;
+      const paginatedUrl = `${url}&startIndex=${startIndex}&maxResults=${RESULTS_PER_PAGE}`;
+      const response = await fetch(paginatedUrl);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
@@ -19,46 +25,129 @@ export default function Results(props) {
         );
       }
       const googleData = await response.json();
-      return googleData;
+      return {
+        items: googleData.items || [],
+        totalItems: googleData.totalItems || 0,
+      };
     } catch (error) {
       console.error(error);
-      return null;
+      return { items: [], totalItems: 0 };
     }
   }
 
-  async function fetchDataWikipedia(query) {
+  async function fetchDataWikipedia(query, page) {
     try {
+      const offset = (page - 1) * RESULTS_PER_PAGE;
       const response = await fetch(
         `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
           query
-        )}&format=json&origin=*`
+        )}&format=json&origin=*&srlimit=${RESULTS_PER_PAGE}&sroffset=${offset}`
       );
       if (!response.ok) {
         throw new Error("Error fetching wikipediaData");
       }
       const wikidata = await response.json();
-      return wikidata;
+      return {
+        results: wikidata.query.search,
+        totalHits: wikidata.query.searchinfo.totalhits,
+      };
     } catch (error) {
       console.error(error);
-      return { query: { search: [] } };
+      return { results: [], totalHits: 0 };
     }
   }
 
   function searchAnaforas(query) {
     const iframeElement = document.createElement("iframe");
-    iframeElement.src = `https://anaforas.fic.edu.uy/jspui/simple-search?query=${encodeURIComponent(
-      query
-    )}`;
+    iframeElement.src = `https://anaforas.fic.edu.uy/jspui/simple-search?query=${encodeURIComponent(query)}`;
     iframeElement.width = "100%";
     iframeElement.height = "600px";
     iframeElement.title = "Resultados de búsqueda";
     return iframeElement;
   }
 
-  async function renderResults(query, filter = "all") {
+  function createPaginationControls(totalResults, currentPage, filter) {
+    const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
+
+    const paginationContainer = createElement("div", {
+      className: "pagination",
+      style: {
+        display: "flex",
+        justifyContent: "center",
+        gap: "1rem",
+        margin: "2rem 0",
+      },
+    });
+
+    // Previous button
+    const prevButton = createElement("button", {
+      className: `pagination-button ${currentPage <= 1 ? "disabled" : ""}`,
+      textContent: "Previous",
+      disabled: currentPage <= 1,
+      style: {
+        padding: "0.5rem 1rem",
+        border: "1px solid #ddd",
+        borderRadius: "4px",
+        background: currentPage <= 1 ? "#f5f5f5" : "#fff",
+        cursor: currentPage <= 1 ? "not-allowed" : "pointer",
+      },
+    });
+
+    // Next button
+    const nextButton = createElement("button", {
+      className: `pagination-button ${currentPage >= totalPages ? "disabled" : ""}`,
+      textContent: "Next",
+      disabled: currentPage >= totalPages,
+      style: {
+        padding: "0.5rem 1rem",
+        border: "1px solid #ddd",
+        borderRadius: "4px",
+        background: currentPage >= totalPages ? "#f5f5f5" : "#fff",
+        cursor: currentPage >= totalPages ? "not-allowed" : "pointer",
+      },
+    });
+
+    // Page info
+    const pageInfo = createElement("span", {
+      textContent: `Page ${currentPage} of ${totalPages}`,
+      style: {
+        alignSelf: "center",
+      },
+    });
+
+    // Add event listeners
+    if (currentPage > 1) {
+      prevButton.addEventListener("click", () => {
+        handlePageChange(currentPage - 1);
+      });
+    }
+
+    if (currentPage < totalPages) {
+      nextButton.addEventListener("click", () => {
+        handlePageChange(currentPage + 1);
+      });
+    }
+
+    paginationContainer.appendChild(prevButton);
+    paginationContainer.appendChild(pageInfo);
+    paginationContainer.appendChild(nextButton);
+
+    return paginationContainer;
+  }
+
+  async function handlePageChange(newPage) {
+    currentPage = newPage;
+    updateURL(currentSearchTerm, currentFilter, currentPage);
+    await renderResults(currentSearchTerm, currentFilter, currentPage);
+  }
+
+  async function renderResults(query, filter = "all", page = 1) {
     if (!query) return;
 
     currentSearchTerm = query;
+    currentFilter = filter;
+    currentPage = page;
+
     let googleBooksData = null;
     let wikipediaData = null;
     let anaforaData = null;
@@ -66,21 +155,31 @@ export default function Results(props) {
     const resultsElement = document.getElementById("resultsContainer");
     const anaforasContainer = document.getElementById("anaforasContainer");
     const resultsNumbers = document.getElementById("resultsCount");
+    const paginationElement = document.getElementById("paginationContainer");
 
-    if (!resultsElement || !anaforasContainer || !resultsNumbers) return;
+    if (
+      !resultsElement ||
+      !anaforasContainer ||
+      !resultsNumbers ||
+      !paginationElement
+    )
+      return;
+
+    // Clear previous results
     resultsElement.innerHTML = "";
     anaforasContainer.innerHTML = "";
-
+    paginationElement.innerHTML = "";
     resultsElement.innerHTML = "<p>Loading results...</p>";
 
     try {
+      // Only fetch data for the selected filter or all
       if (filter === "google" || filter === "all") {
         const URL = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`;
-        googleBooksData = await fetchDataGoogleBooks(URL);
+        googleBooksData = await fetchDataGoogleBooks(URL, page);
       }
 
       if (filter === "wikipedia" || filter === "all") {
-        wikipediaData = await fetchDataWikipedia(query);
+        wikipediaData = await fetchDataWikipedia(query, page);
       }
 
       if (filter === "anaforas" || filter === "all") {
@@ -90,7 +189,10 @@ export default function Results(props) {
       // Clear loading state
       resultsElement.innerHTML = "";
 
-      // Render Google Books results
+      // Update filter UI
+      updateActiveFilter(filter);
+
+      // Render results based on the current filter
       if (googleBooksData?.items && (filter === "google" || filter === "all")) {
         googleBooksData.items.forEach((item) => {
           const itemLink = createElement("a", {
@@ -103,7 +205,7 @@ export default function Results(props) {
             style: {
               border: "1px solid #ddd",
               margin: "10px",
-              padding: "10px",
+              padding: "1rem",
               borderRadius: "5px",
             },
           });
@@ -128,18 +230,17 @@ export default function Results(props) {
         });
       }
 
-      // Render Wikipedia results
       if (
-        wikipediaData?.query?.search &&
+        wikipediaData?.results &&
         (filter === "wikipedia" || filter === "all")
       ) {
-        wikipediaData.query.search.forEach((item) => {
+        wikipediaData.results.forEach((item) => {
           const itemElement = createElement("div", {
             className: "result-item",
             style: {
               border: "1px solid #ddd",
               margin: "10px",
-              padding: "10px",
+              padding: "1rem",
               borderRadius: "5px",
             },
           });
@@ -155,16 +256,30 @@ export default function Results(props) {
         });
       }
 
-      // Render Anaforas results
       if (anaforaData && (filter === "anaforas" || filter === "all")) {
         anaforasContainer.appendChild(anaforaData);
       }
 
-      // Update results count
+      // Calculate total results and update count
       const totalResults =
-        (googleBooksData?.items?.length || 0) +
-        (wikipediaData?.query?.search?.length || 0);
+        filter === "google"
+          ? googleBooksData?.totalItems
+          : filter === "wikipedia"
+            ? wikipediaData?.totalHits
+            : (googleBooksData?.totalItems || 0) +
+              (wikipediaData?.totalHits || 0);
+
       resultsNumbers.textContent = totalResults;
+
+      // Add pagination controls
+      if (totalResults > RESULTS_PER_PAGE) {
+        const paginationControls = createPaginationControls(
+          totalResults,
+          page,
+          filter
+        );
+        paginationElement.appendChild(paginationControls);
+      }
 
       // Show no results message if needed
       if (
@@ -182,78 +297,87 @@ export default function Results(props) {
     }
   }
 
-  function updateURL(query, filter) {
+  function updateActiveFilter(filter) {
+    const filterLinks = document.querySelectorAll("#filterList a");
+    filterLinks.forEach((link) => {
+      if (link.getAttribute("data-filter") === filter) {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  function updateURL(query, filter, page) {
     const urlParams = new URLSearchParams();
     if (query) urlParams.set("query", query);
     if (filter && filter !== "all") urlParams.set("filter", filter);
+    if (page && page > 1) urlParams.set("page", page.toString());
     window.history.pushState(null, "", `?${urlParams.toString()}`);
   }
 
-  function handleFilterClick(filterLink) {
+  function handleFilterClick(event) {
+    event.preventDefault();
+    const filterLink = event.currentTarget;
     const filter = filterLink.getAttribute("data-filter");
-    const surname = document.getElementById("surname")?.value.trim();
-    if (surname) {
-      updateURL(surname, filter);
-      renderResults(surname, filter);
-    }
+    const searchInput = document.getElementById("surname");
+    const query = searchInput?.value.trim();
 
-    // Update active filter
-    document
-      .querySelectorAll("#filterList a")
-      .forEach((link) => link.classList.remove("active"));
-    filterLink.classList.add("active");
+    if (query) {
+      currentPage = 1; 
+      updateURL(query, filter, currentPage);
+      renderResults(query, filter, currentPage);
+    }
   }
 
-  // Initialize the component
   function init() {
     const searchQuery = getQueryParam("query");
-    const initialFilter = getQueryParam("filter") || "all";
+    const filterParam = getQueryParam("filter") || "all";
+    const pageParam = parseInt(getQueryParam("page")) || 1;
+    const searchInput = document.getElementById("surname");
 
-    if (searchQuery) {
-      const searchInput = document.getElementById("surname");
-      if (searchInput) {
-        searchInput.value = searchQuery;
-        renderResults(searchQuery, initialFilter);
-      }
+    if (searchInput) {
+      searchInput.value = searchQuery || "";
     }
 
-    // Add event listeners
-    document.addEventListener("DOMContentLoaded", function () {
-      const filterLinks = document.querySelectorAll("#filterList a");
-      filterLinks.forEach((link) => {
-        link.addEventListener("click", function (event) {
-          event.preventDefault();
-          handleFilterClick(this);
-        });
-      });
+    // Initialize with the current query and filter
+    if (searchQuery) {
+      renderResults(searchQuery, filterParam, pageParam);
+    }
 
-      // Add search button click handler
-      const searchButton = document.getElementById("searchButton");
-      if (searchButton) {
-        searchButton.addEventListener("click", function () {
-          const surname = document.getElementById("surname")?.value.trim();
-          if (surname) {
-            updateURL(surname, "all");
-            renderResults(surname, "all");
-          }
-        });
-      }
-
-      // Add enter key handler for search input
-      const searchInput = document.getElementById("surname");
-      if (searchInput) {
-        searchInput.addEventListener("keypress", function (event) {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            const surname = this.value.trim();
-            if (surname) {
-              updateURL(surname, "all");
-              renderResults(surname, "all");
-            }
-          }
-        });
-      }
+    // Add filter click handlers
+    const filterLinks = document.querySelectorAll("#filterList a");
+    filterLinks.forEach((link) => {
+      link.addEventListener("click", handleFilterClick);
     });
+
+    // Add search button handler
+    const searchButton = document.getElementById("searchButton");
+    if (searchButton) {
+      searchButton.addEventListener("click", () => {
+        const query = searchInput?.value.trim();
+        if (query) {
+          currentPage = 1; 
+          updateURL(query, currentFilter, currentPage);
+          renderResults(query, currentFilter, currentPage);
+        }
+      });
+    }
+
+    // Add enter key handler
+    if (searchInput) {
+      searchInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const query = searchInput.value.trim();
+          if (query) {
+            currentPage = 1;
+            updateURL(query, currentFilter, currentPage);
+            renderResults(query, currentFilter, currentPage);
+          }
+        }
+      });
+    }
   }
 
   const structure = createElement("div", {}, [
@@ -316,6 +440,7 @@ export default function Results(props) {
             createElement("h3", { textContent: "Search Results" }),
             createElement("p", {}, [
               createElement("span", { id: "resultsCount", textContent: "0" }),
+              createElement("span", { textContent: " results found" }),
             ]),
           ]),
           createElement("div", {
@@ -323,10 +448,16 @@ export default function Results(props) {
             id: "resultsContainer",
           }),
           createElement("div", { id: "anaforasContainer" }),
+          createElement("div", {
+            id: "paginationContainer",
+            className: "pagination-container",
+          }),
         ]),
       ]),
     ]),
   ]);
+
+  // Initialize after the component is mounted
   setTimeout(init, 0);
 
   return structure;

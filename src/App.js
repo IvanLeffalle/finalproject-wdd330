@@ -7,5 +7,5 @@ export default function App() {
 
   Router(main);
 
-  return createElement("div", {}, [main]);
+  return createElement("div", { className: "div-parent" }, [main]);
 }

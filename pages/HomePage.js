@@ -70,5 +70,5 @@ export default function Homepage() {
     });
   });
 
-  return createElement("div", {}, [header, main, footer]);
+  return createElement("div", {className:"div-parent"}, [header, main, footer]);
 }
