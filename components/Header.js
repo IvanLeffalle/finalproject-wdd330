@@ -6,33 +6,51 @@ export default function Header() {
     textContent: "GeneaHub",
   });
 
-  const aHome = createElement("a", {
-    href: "/",
-    textContent: "Home",
-    id: "home",
-  });
-  const aTools = createElement("a", {
-    href: "/links",
-    textContent: "Tools",
-    id: "tools",
-  });
-  const aAbout = createElement("a", {
-    href: "/about",
-    textContent: "About",
-    id: "about",
-  });
+  const menu = createElement("a", { id: "menuIcon", href: "#" });
 
-  const li = createElement("li", {}, [aHome, aTools, aAbout]);
+  const navList = createElement(
+    "ul",
+    { className: "nav-list", id: "navList" },
+    [
+      createElement("li", {}, [
+        createElement("a", { href: "/", textContent: "Home", id: "home" }),
+      ]),
+      createElement("li", {}, [
+        createElement("a", {
+          href: "/links",
+          textContent: "Tools",
+          id: "tools",
+        }),
+      ]),
+      createElement("li", {}, [
+        createElement("a", {
+          href: "/about",
+          textContent: "About",
+          id: "about",
+        }),
+      ]),
+    ]
+  );
 
-  const ul = createElement("ul", { className: "nav-list", id: "navList" }, [
-    li,
-  ]);
+  const nav = createElement("nav", {}, [navList, menu]);
 
-  const nav = createElement("nav", {}, [ul]);
   const section = createElement("section", { className: "header-container" }, [
     logo,
     nav,
   ]);
 
-  return createElement("div", { className: "" }, [section]);
+  const header = createElement("div", {}, [section]);
+
+  const aMenu = header.querySelector("#menuIcon");
+  const aList = header.querySelector("#navList");
+
+  if (aMenu && aList) {
+    aMenu.addEventListener("click", () => {
+      event.preventDefault();
+      aList.classList.toggle("active");
+      aMenu.classList.toggle("active");
+    });
+  }
+
+  return header;
 }
