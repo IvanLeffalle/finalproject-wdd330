@@ -287,10 +287,9 @@ export default function Links() {
       id: "generateButton",
     }),
   ]);
-
-  const familyTreeOutput = createElement(
+  const containerButtons = createElement(
     "div",
-    { id: "familyTreeOutput", className: "familyTreeOutput" },
+    { className: "container-buttons" },
     [
       createElement("button", {
         type: "button",
@@ -304,8 +303,15 @@ export default function Links() {
       }),
     ]
   );
+
+  const familyTreeOutput = createElement(
+    "div",
+    { id: "familyTreeOutput", className: "familyTreeOutput" },
+    [containerButtons]
+  );
   const familyTreeCanvas = createElement("canvas", {
     id: "familyTreeCanvas",
+    className: "familyTree-Canvas",
     width: "600",
     height: "400",
   });

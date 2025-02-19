@@ -673,7 +673,21 @@ iframe {
   .filters {
     margin-bottom: 1rem;
   }
-}
+  .familyTree-Canvas {
+    width: 100%;
+  }
+  .container-buttons
+  {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #downloadButton, #downloadImageButton{
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
 
 /*responsive*/
 
