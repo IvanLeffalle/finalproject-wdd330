@@ -1,12 +1,15 @@
 import Header from "../components/Header";
 import { createElement } from "../src/utils";
-
+import treeImage from "../src/assets/familytree.jpg";
+import Footer from "../components/Footer";
 export default function Links() {
   // Properly load jsPDF
   const script = document.createElement("script");
   script.src =
     "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
   document.head.appendChild(script);
+
+  const srcImage = treeImage;
 
   function generateFamilyTree() {
     const fields = {
@@ -21,31 +24,78 @@ export default function Links() {
         document.getElementById("grandmotherName2")?.value || "",
     };
 
-    const treeVisualization = document.getElementById("treeVisualization");
-    if (!treeVisualization) return;
+    const canvas = document.getElementById("familyTreeCanvas");
+    if (!canvas) return;
 
-    treeVisualization.innerHTML = `
-      <div style="text-align: center;">
-        <h4>${fields.grandfatherName} + ${fields.grandmotherName}</h4>
-        <p>|</p>
-        <h3>${fields.fatherName}</h3>
-        <p>|</p>
-        <h2>${fields.userName}</h2>
-        <p>|</p>
-        <h3>${fields.motherName}</h3>
-        <p>|</p>
-        <h4>${fields.grandfatherName2} + ${fields.grandmotherName2}</h4>
-      </div>
-    `;
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+
+    image.onload = () => {
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      function drawNode(x, y, text) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.beginPath();
+        ctx.roundRect(x - 40, y - 15, 90, 30, 10);
+        ctx.fill();
+
+        ctx.fillStyle = "black";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, x, y);
+      }
+
+      drawNode(300, 350, fields.userName); // Usuario
+      drawNode(200, 250, fields.fatherName); // Padre
+      drawNode(400, 250, fields.motherName); // Madre
+      drawNode(150, 150, fields.grandfatherName); // Abuelo paterno
+      drawNode(250, 150, fields.grandmotherName); // Abuela paterna
+      drawNode(350, 150, fields.grandfatherName2); // Abuelo materno
+      drawNode(450, 150, fields.grandmotherName2); // Abuela materna
+    };
+
+    image.onerror = (err) => {
+      console.error("Error with the image::", err);
+      ctx.fillStyle = "black";
+      ctx.font = "16px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        "Error with the image:",
+        canvas.width / 2,
+        canvas.height / 2
+      );
+    };
+
+    image.src = srcImage;
 
     const familyTreeOutput = document.getElementById("familyTreeOutput");
     if (familyTreeOutput) {
       familyTreeOutput.style.display = "block";
     }
   }
+  function downloadCanvasImage(canvasId, fileName = "image.png") {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      console.error("canvas not found");
+      return;
+    }
+    const imageURL = canvas.toDataURL("image/png");
+
+    const downloadLink = document.createElement("a");
+    downloadLink.href = imageURL;
+    downloadLink.download = fileName;
+
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  }
 
   function downloadPDF() {
-    // Check if jsPDF is loaded
     if (typeof window.jspdf === "undefined") {
       console.error("jsPDF is not loaded yet");
       return;
@@ -53,21 +103,16 @@ export default function Links() {
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const treeVisualization = document.getElementById("treeVisualization");
 
-    if (!treeVisualization) return;
+    const canvas = document.getElementById("familyTreeCanvas");
+    if (!canvas) return;
 
-    const treeContent = treeVisualization.innerText;
+    const imgData = canvas.toDataURL("image/png");
 
-    doc.setFontSize(12);
-    doc.text("Family Tree", 10, 10);
-    doc.text(treeContent.split("\n"), 10, 20);
-
+    doc.addImage(imgData, "PNG", 10, 10, 180, 120);
     doc.save("family-tree.pdf");
   }
-
   function initializeEventListeners() {
-    // Generate button click handler
     const generateButton = document.querySelector('button[type="button"]');
     if (generateButton) {
       generateButton.addEventListener("click", generateFamilyTree);
@@ -77,6 +122,13 @@ export default function Links() {
     const downloadButton = document.getElementById("downloadButton");
     if (downloadButton) {
       downloadButton.addEventListener("click", downloadPDF);
+    }
+
+    const downloadImageButton = document.getElementById("downloadImageButton");
+    if (downloadImageButton) {
+      downloadImageButton.addEventListener("click", () => {
+        downloadCanvasImage("familyTreeCanvas", "family-tree.png");
+      });
     }
   }
 
@@ -161,6 +213,7 @@ export default function Links() {
   ];
   // Create the DOM structure
   const header = createElement("header", {}, [Header()]);
+  const footer = createElement("footer", {}, [Footer()]);
 
   const title = createElement("h2", {
     textContent: "Genealogy Websites",
@@ -237,17 +290,25 @@ export default function Links() {
 
   const familyTreeOutput = createElement(
     "div",
-    { id: "familyTreeOutput", style: { display: "none" } },
+    { id: "familyTreeOutput", className: "familyTreeOutput" },
     [
-      createElement("h3", { textContent: "Your Family Tree" }),
-      createElement("div", { id: "treeVisualization" }),
       createElement("button", {
         type: "button",
         textContent: "Download as PDF",
         id: "downloadButton",
       }),
+      createElement("button", {
+        type: "button",
+        textContent: "Download as Image",
+        id: "downloadImageButton",
+      }),
     ]
   );
+  const familyTreeCanvas = createElement("canvas", {
+    id: "familyTreeCanvas",
+    width: "600",
+    height: "400",
+  });
 
   const familyTreeDiv = createElement("div", { className: "family-tree" }, [
     createElement("h2", {
@@ -255,6 +316,7 @@ export default function Links() {
       className: "title",
     }),
     familyTreeForm,
+    familyTreeCanvas,
     familyTreeOutput,
   ]);
 
@@ -267,11 +329,6 @@ export default function Links() {
   const main = createElement("main", { className: "links-Main" }, [
     contentContainer,
   ]);
-
-  const footer = createElement("footer", {
-    className: "footer",
-    innerHTML: "&copy; 2024 Surname Search. All rights reserved.",
-  });
 
   setTimeout(initializeEventListeners, 0);
 

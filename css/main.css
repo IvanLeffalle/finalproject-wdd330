@@ -74,7 +74,7 @@ nav li a:hover {
   justify-content: center;
   padding: 2rem;
   background-color: rgba(255, 250, 236, 0.6);
-  position: relative; 
+  position: relative;
   overflow: hidden;
 }
 
@@ -88,8 +88,8 @@ nav li a:hover {
   background-image: url("/src/assets/tress.png");
   background-position: bottom;
   background-repeat: repeat-x;
-  opacity: 1; 
-  z-index: -1; 
+  opacity: 1;
+  z-index: -1;
 }
 
 .search-container {
@@ -263,6 +263,14 @@ footer {
 
 #familyTreeOutput {
   margin-top: 2rem;
+  display: none;
+  margin-bottom: 2rem;
+}
+#familyTreeCanvas {
+  margin-top: 2rem;
+}
+#downloadImageButton {
+  margin-left: 2rem;
 }
 
 #treeVisualization {
@@ -423,6 +431,18 @@ button:hover {
   color: white;
 }
 
+nav .nav-list li .active {
+  background: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 0.5rem;
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
 .results {
   background: white;
   padding: 1.5rem;
@@ -512,6 +532,137 @@ iframe {
   border-radius: 0.5rem;
   background: white;
   box-shadow: var(--card-shadow);
+}
+.section1 {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainAbout {
+  flex: 1;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.img-container {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+.img-container img {
+  width: 100%;
+  max-width: 550px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(61, 61, 61, 0.5);
+}
+
+.content-container {
+  flex: 1;
+}
+
+.content-section {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.about-paragraph {
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.features-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.features-list li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.4;
+  color: #555;
+}
+
+.features-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #666;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1024px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .img-container {
+    gap: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .img-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content-container {
+    width: 100%;
+  }
+
+  .content-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .mainAbout {
+    padding: 0 0.5rem;
+    margin: 1rem auto;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .about-paragraph,
+  .features-list li {
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 768px) {

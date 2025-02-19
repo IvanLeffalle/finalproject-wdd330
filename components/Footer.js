@@ -1,8 +1,11 @@
-const footer = createElement(
-  "footer",
-  {
+import { createElement } from "../src/utils";
+
+export default function Footer() {
+  const date = new Date();
+  const currentYear = date.getFullYear();
+  const footer = createElement("div", {
     className: "footer",
-    textContent: "&copy; 2024 Surname Search. All rights reserved.",
-  },
-  []
-);
+    textContent: `© ${currentYear} Ivan Leffalle. All rights reserved.`,
+  });
+  return createElement("footer", { className: "" }, [footer]);
+}

@@ -1,5 +1,6 @@
 import { createElement } from "../src/utils";
 import Header from "../components/Header";
+import searchIconPng from "../src/assets/search-icon.png";
 
 export default function Results(props) {
   const { query, filter } = props || {};
@@ -43,10 +44,12 @@ export default function Results(props) {
           query
         )}&format=json&origin=*&srlimit=${RESULTS_PER_PAGE}&sroffset=${offset}`
       );
+
       if (!response.ok) {
         throw new Error("Error fetching wikipediaData");
       }
       const wikidata = await response.json();
+      console.log(wikidata);
       return {
         results: wikidata.query.search,
         totalHits: wikidata.query.searchinfo.totalhits,
@@ -182,7 +185,7 @@ export default function Results(props) {
         wikipediaData = await fetchDataWikipedia(query, page);
       }
 
-      if (filter === "anaforas" || filter === "all") {
+      if (filter === "anaforas") {
         anaforaData = searchAnaforas(query);
       }
 
@@ -235,6 +238,10 @@ export default function Results(props) {
         (filter === "wikipedia" || filter === "all")
       ) {
         wikipediaData.results.forEach((item) => {
+          const itemLink = createElement("a", {
+            href: `https://es.wikipedia.org/w/index.php?search=${query}&title=Especial%3ABuscar&ns0=1&ns100=1&ns104=1`,
+            className: "item-link",
+          });
           const itemElement = createElement("div", {
             className: "result-item",
             style: {
@@ -251,8 +258,8 @@ export default function Results(props) {
           itemElement.appendChild(
             createElement("p", { innerHTML: item.snippet })
           );
-
-          resultsElement.appendChild(itemElement);
+          itemLink.appendChild(itemElement);
+          resultsElement.appendChild(itemLink);
         });
       }
 
@@ -324,7 +331,7 @@ export default function Results(props) {
     const query = searchInput?.value.trim();
 
     if (query) {
-      currentPage = 1; 
+      currentPage = 1;
       updateURL(query, filter, currentPage);
       renderResults(query, filter, currentPage);
     }
@@ -357,7 +364,7 @@ export default function Results(props) {
       searchButton.addEventListener("click", () => {
         const query = searchInput?.value.trim();
         if (query) {
-          currentPage = 1; 
+          currentPage = 1;
           updateURL(query, currentFilter, currentPage);
           renderResults(query, currentFilter, currentPage);
         }
@@ -391,8 +398,10 @@ export default function Results(props) {
             textContent: "Advanced Search",
           }),
           createElement("div", { className: "input-wrapper-results" }, [
-            createElement("i", {
-              className: "search-icon fas fa-search",
+            createElement("img", {
+              className: "search-icon",
+              src: searchIconPng,
+              alt: "Search Icon",
             }),
             createElement("input", {
               type: "text",

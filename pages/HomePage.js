@@ -1,12 +1,19 @@
 import Header from "../components/Header";
 import { createElement } from "../src/utils";
+import searchIconPng from "../src/assets/search-icon.png";
+import Footer from "../components/Footer";
 export default function Homepage() {
   const header = createElement("header", {}, [Header()]);
-  const searchIcon = createElement("i", {
-    className: "search-icon fas fa-search",
+  const footer = createElement("footer", {}, [Footer()]);
+  
+  const searchIcon = createElement("img", {
+    className: "search-icon",
+    src: searchIconPng, // Usa la variable importada
+    alt: "Search Icon", // Siempre incluye un atributo "alt" para accesibilidad
   });
+
   const title = createElement("h1", {
-    textContent: "FamilyHub",
+    textContent: "GeneaHub",
     className: "title",
   });
 
@@ -41,15 +48,6 @@ export default function Homepage() {
     searchContainer,
   ]);
 
-  const footer = createElement(
-    "footer",
-    {
-      className: "footer",
-      textContent: "&copy; 2024 Surname Search. All rights reserved.",
-    },
-    []
-  );
-
   function search() {
     const surname = document.getElementById("surname").value.trim();
     if (surname) {
@@ -70,5 +68,9 @@ export default function Homepage() {
     });
   });
 
-  return createElement("div", {className:"div-parent"}, [header, main, footer]);
+  return createElement("div", { className: "div-parent" }, [
+    header,
+    main,
+    footer,
+  ]);
 }
