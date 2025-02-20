@@ -676,18 +676,18 @@ iframe {
   .familyTree-Canvas {
     width: 100%;
   }
-  .container-buttons
-  {
+  .container-buttons {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  #downloadButton, #downloadImageButton{
+  #downloadButton,
+  #downloadImageButton {
     margin-bottom: 5px;
     font-size: 12px;
   }
-
+}
 
 /*responsive*/
 

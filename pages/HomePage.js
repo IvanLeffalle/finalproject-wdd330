@@ -8,8 +8,8 @@ export default function Homepage() {
   
   const searchIcon = createElement("img", {
     className: "search-icon",
-    src: searchIconPng, // Usa la variable importada
-    alt: "Search Icon", // Siempre incluye un atributo "alt" para accesibilidad
+    src: searchIconPng, 
+    alt: "Search Icon",
   });
 
   const title = createElement("h1", {
